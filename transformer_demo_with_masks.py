@@ -1,3 +1,7 @@
+"""
+Same as transformer_demo.py, except that in this case, the generated samples can have different lenghts,
+which introduces the need for masks.
+"""
 import math
 
 import numpy as np
@@ -5,6 +9,7 @@ import torch
 import torch.nn as nn
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 # ############################################################
 # Model definition
@@ -146,6 +151,7 @@ class SimpleTransformerModel(nn.Module):
 
         return idxs
 
+
 # ############################################################
 # Data generation
 # ############################################################
@@ -156,11 +162,13 @@ class ToyData(torch.utils.data.Dataset):
         consecutive numbers between 'min_val' and 'max_val' (roundabout), and the target is the same sequence
         shifted by 'shift'.
 
-        :param n_elems:
-        :param max_length:
-        :param min_val:
-        :param max_val:
-        :param shift:
+        Generated samples have a random length such that 1 <= length <= max_length.
+
+        :param n_elems: number of elements to generate.
+        :param max_length: maximum sequence length.
+        :param min_val: minimum value of sequence elements.
+        :param max_val: maximum value of sequence elements.
+        :param shift: number by which the target sequence will be shifted wrt the source sequence.
         """
         self.max_len = max_length
         self.min_val = min_val
@@ -238,6 +246,7 @@ class ToyData(torch.utils.data.Dataset):
             res += str(self.cba_map[torch.argmax(row).item()])
 
         return res
+
 
 # ############################################################
 # Train and evaluate model

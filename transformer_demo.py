@@ -1,3 +1,10 @@
+"""
+A simple demonstration of how to use a Transformer network to perform Seq2Seq prediction.
+
+A random dataset of samples will be generated consisting of source sequences of x consecutive numbers (roundabout),
+mapped onto a target sequence that is equal to the source sequence shifted by some user specified shift. E.g., a sample
+could be something like "78901", with a corresponding target shifted by 2, "90123".
+"""
 import math
 
 import numpy as np
@@ -5,6 +12,7 @@ import torch
 import torch.nn as nn
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 # ############################################################
 # Model definition
@@ -137,6 +145,7 @@ class SimpleTransformerModel(nn.Module):
 
         return idxs
 
+
 # ############################################################
 # Data generation
 # ############################################################
@@ -147,11 +156,13 @@ class ToyData(torch.utils.data.Dataset):
         consecutive numbers between 'min_val' and 'max_val' (roundabout), and the target is the same sequence
         shifted by 'shift'.
 
-        :param n_elems:
-        :param length:
-        :param min_val:
-        :param max_val:
-        :param shift:
+        All generated samples have equal length = "length".
+
+        :param n_elems: number of elements to generate.
+        :param length: length of each sequence.
+        :param min_val: minimum value of sequence elements.
+        :param max_val: maximum value of sequence elements.
+        :param shift: number by which the target sequence will be shifted wrt the source sequence.
         """
         self.min_val = min_val
         self.max_val = max_val
@@ -208,6 +219,7 @@ class ToyData(torch.utils.data.Dataset):
             res += str(self.cba_map[e])
 
         return  res
+
 
 # ############################################################
 # Train and evaluate model
